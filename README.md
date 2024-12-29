@@ -1,0 +1,2 @@
+# nextjs-panel
+panel financiero
