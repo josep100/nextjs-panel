@@ -2,7 +2,7 @@ import { fetchFilteredCustomers, fetchInvoicesPages } from "@/app/lib/data";
 import Table from "@/app/ui/customers/table";
 import { lusitana } from "@/app/ui/fonts";
 import Pagination from "@/app/ui/invoices/pagination";
-import Search from "@/app/ui/search";
+//import Search from "@/app/ui/search";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -25,7 +25,7 @@ export default async function Page(props: {
     return(
         <>
             <Table customers={customers} />
-            <div className="mt-5 flex w-full justify-center">
+            <div className={` ${lusitana.className} mt-5 flex w-full justify-center`}>
                 <Pagination totalPages={totalPages} />
             </div>
         </>

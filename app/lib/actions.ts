@@ -55,7 +55,8 @@ export async function createInvoice(prevState: State, formData: FormData) {
         INSERT INTO invoices (customer_id, amount, status, date)
         VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
       `;
-    } catch (error) {
+    } catch (error){
+      console.error("Error al crear la factura:", error);
       return {
         errors: {},
         message: 'Error de la base de datos: No se pudo crear la factura.',
@@ -84,7 +85,8 @@ export async function updateInvoice(id: string, formData: FormData){
             WHERE id = ${id}
         `;
     }catch(error){
-        console.error('Error de la Base de Datos: Nose pudo actualizar la factura');
+
+        console.error('Error de la Base de Datos: Nose pudo actualizar la factura', error);
     }
 
     revalidatePath('/dashboard/invoices');
@@ -97,7 +99,7 @@ export async function deleteInvoice(id: string){
         revalidatePath('/dashboard/invoices');
         //return{message: 'Factura eliminada'};
     }catch(error){
-        console.error('Error de la Base de Datos: No se pudo eliminar la factura');
+        console.error('Error de la Base de Datos: No se pudo eliminar la factura', error);
     }
 }
 
