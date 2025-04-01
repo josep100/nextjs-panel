@@ -23,12 +23,12 @@ const FormSchema = z.object({
 
 const CreateInvoice = FormSchema.omit({id: true, date: true});
 export type State = {
-    errors?: {
+    errors: {
         customerID?: string[],
         amount?: string[],
         status?: string[],
     };
-    message?: string | null;
+    message: string;
 };
 
 export async function createInvoice(prevState: State, formData: FormData) {
@@ -55,9 +55,10 @@ export async function createInvoice(prevState: State, formData: FormData) {
         INSERT INTO invoices (customer_id, amount, status, date)
         VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
       `;
-    } catch (error) {
-
+    } catch (error){
+      console.error("Error al crear la factura:", error);
       return {
+        errors: {},
         message: 'Error de la base de datos: No se pudo crear la factura.',
       };
     }
@@ -84,7 +85,8 @@ export async function updateInvoice(id: string, formData: FormData){
             WHERE id = ${id}
         `;
     }catch(error){
-        return{message: 'Error de la Base de Datos: Nose pudo actualizar la factura'};
+
+        console.error('Error de la Base de Datos: Nose pudo actualizar la factura', error);
     }
 
     revalidatePath('/dashboard/invoices');
@@ -95,9 +97,9 @@ export async function deleteInvoice(id: string){
     try{
         await sql`DELETE FROM invoices WHERE ID = ${id}`;
         revalidatePath('/dashboard/invoices');
-        return{message: 'Factura eliminada'};
+        //return{message: 'Factura eliminada'};
     }catch(error){
-        return{mesage:'Error de la Base de Datos: No se pudo eliminar la factura'};
+        console.error('Error de la Base de Datos: No se pudo eliminar la factura', error);
     }
 }
 
@@ -105,8 +107,16 @@ export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
 ) {
+  console.log("la funcion es llamada");
   try {
-    await signIn('credentials', formData);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    await signIn('credentials', {
+      email,
+      password,
+    });
+    console.log("email:", email);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
